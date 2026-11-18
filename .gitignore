@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# python / ml
+ml/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Real participants' keystroke timing is personal data — never commit it to a public repo.
+ml/data/raw/*
+!ml/data/raw/.gitkeep

@@ -1,0 +1,285 @@
+/* ---------------------------------------------------------------------------
+ * Design tokens — Tailwind CSS v4 + next-themes + shadcn/ui
+ * Source of truth: standards/tokens.json · Spec: standards/TECH_STACK.md §9–§12
+ *
+ * HOW TO USE IN A NEW PROJECT
+ *   1. Copy this file to src/styles/tokens.css
+ *   2. In src/app/globals.css:  @import "../styles/tokens.css";
+ *      (and delete globals.css's own @import "tailwindcss" — it lives here)
+ *   3. Change ONLY the brand accent block marked BRAND below.
+ *   4. Never write a raw hex outside this file. That is a review blocker.
+ *
+ * THREE TIERS
+ *   Tier 1  --gray-*, --blue-*      primitives, this file only
+ *   Tier 2  --ds-*                  semantic, what feature code uses
+ *   Tier 3  --background, --primary shadcn bridge + component tokens
+ *
+ * NAMING TRAP: Tailwind v4 owns the --color-* namespace inside @theme, and shadcn writes
+ * --color-accent / --color-border / --color-primary into it. A semantic token sharing one
+ * of those names is silently ignored — @theme wins and your :root value renders nowhere.
+ * The --ds-* prefix is what makes that overlap impossible. Compiled clean on Tailwind 4.3.
+ * ------------------------------------------------------------------------- */
+
+@import "tailwindcss";
+
+/* Light-only by product decision (TECH_STACK ADR 012): no dark variant, no theme toggle. */
+
+/* ===========================================================================
+ * TIER 1 — PRIMITIVES (do not use outside this file)
+ * ========================================================================= */
+:root {
+  --white:     #FFFFFF;
+  --gray-50:   #FAFAFA;
+  --gray-100:  #F2F2F2;
+  --gray-200:  #EBEBEB;
+  --gray-300:  #DCDCDC;
+  --gray-500:  #8F8F8F;
+  --gray-600:  #727272;
+  --gray-650:  #5C5C5C;
+  --gray-400:  #A1A1A1;
+  --gray-800:  #333333;
+  --gray-850:  #242424;
+  --gray-880:  #1C1C1C;
+  --gray-900:  #1A1A1A;
+  --gray-925:  #111111;
+  --gray-950:  #0A0A0A;
+  --gray-fg:   #171717;
+  --gray-fg-d: #EDEDED;
+
+  /* BRAND — KeyDNA signal blue. #1672D1 passes 4.5:1 with white at any size.
+     Light-only product (ADR 012), so the dark slots mirror light values. */
+  --blue-600:  #1672D1;   /* accent */
+  --blue-300:  #1672D1;   /* unused: no dark mode */
+  --blue-50:   #E8F2FD;   /* accent wash */
+  --blue-950:  #E8F2FD;   /* unused: no dark mode */
+
+  /* Hybrid palette (ADR 012) — chunky "lip" shades sit under every 3D surface. */
+  --blue-lip:    #0E559E;
+  --violet-500:  #6F4EF0;
+  --violet-lip:  #4F31C4;
+  --violet-50:   #F1EDFE;
+  --cyan-500:    #0BA5C4;
+  --cyan-50:     #E3F7FB;
+  --green-500:   #1E9650;
+  --green-lip:   #157339;
+  --green-50:    #E6F6EC;
+  --amber-500:   #F2A100;
+  --amber-lip:   #C17F00;
+  --amber-50:    #FFF5DF;
+  --amber-ink:   #3B2700;
+  --red-500:     #D93A3F;
+  --red-lip:     #A82A2E;
+  --red-50:      #FDECEC;
+  --ink-900:     #1B1F27;
+  --ink-600:     #545B6A;
+  --ink-450:     #7F8695;
+  --line-200:    #E3E6EB;
+  --line-300:    #D2D6DD;
+  --canvas:      #F6F7F9;
+
+  --green-700: #0F7B47;
+  --green-400: #3ECF8E;
+  --amber-700: #A35C00;
+  --amber-400: #F5A524;
+  --red-600:   #C0362C;
+  --red-400:   #FF6B60;
+}
+
+/* ===========================================================================
+ * TIER 2 — SEMANTIC (light)
+ * ========================================================================= */
+:root {
+  color-scheme: light;
+
+  --ds-bg:             var(--white);
+  --ds-bg-subtle:      var(--canvas);
+  --ds-bg-muted:       var(--gray-100);
+  --ds-bg-elevated:    var(--white);
+
+  --ds-fg:             var(--ink-900);
+  --ds-fg-secondary:   var(--ink-600);
+  --ds-fg-muted:       var(--ink-450);
+
+  --ds-border:         var(--line-200);
+  --ds-border-strong:  var(--line-300);
+
+  --ds-accent:         var(--blue-600);
+  --ds-accent-fg:      var(--white);
+  --ds-accent-subtle:  var(--blue-50);
+
+  --ds-success:        var(--green-lip);
+  --ds-warning:        var(--amber-700);
+  --ds-danger:         var(--red-500);
+  --ds-danger-fg:      var(--white);
+
+  --ds-focus-ring:     var(--blue-600);
+
+  /* KeyDNA additions */
+  --ds-accent-lip:     var(--blue-lip);
+  --ds-dna:            var(--violet-500);
+  --ds-dna-lip:        var(--violet-lip);
+  --ds-dna-subtle:     var(--violet-50);
+  --ds-signal:         var(--cyan-500);
+  --ds-signal-subtle:  var(--cyan-50);
+  --ds-success-lip:    var(--green-lip);
+  --ds-success-subtle: var(--green-50);
+  --ds-success-face:   var(--green-500);
+  --ds-warning-face:   var(--amber-500);
+  --ds-warning-lip:    var(--amber-lip);
+  --ds-warning-subtle: var(--amber-50);
+  --ds-warning-ink:    var(--amber-ink);
+  --ds-danger-lip:     var(--red-lip);
+  --ds-danger-subtle:  var(--red-50);
+  --ds-surface-lip:    var(--line-200);
+
+  /* Elevation — light mode is shadow-as-border: hairline ring + soft shadow. */
+  --ds-elevation-0: 0 0 0 1px rgb(0 0 0 / 0.06);
+  --ds-elevation-1: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.06);
+  --ds-elevation-2: 0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.08);
+  --ds-elevation-3: 0 0 0 1px rgb(0 0 0 / 0.08), 0 12px 32px rgb(0 0 0 / 0.12);
+}
+
+
+/* ===========================================================================
+ * TIER 3 — shadcn/ui bridge
+ * shadcn components read these names. Mapping them from --ds-* means a
+ * generated component is themed correctly the moment it lands, with no edits.
+ * NOTE: shadcn's `accent` is a subtle hover surface, NOT the brand colour.
+ * The brand lives in `primary`.
+ * ========================================================================= */
+:root {
+  --background:            var(--ds-bg);
+  --foreground:            var(--ds-fg);
+  --card:                  var(--ds-bg-elevated);
+  --card-foreground:       var(--ds-fg);
+  --popover:               var(--ds-bg-elevated);
+  --popover-foreground:    var(--ds-fg);
+  --primary:               var(--ds-accent);
+  --primary-foreground:    var(--ds-accent-fg);
+  --secondary:             var(--ds-bg-muted);
+  --secondary-foreground:  var(--ds-fg);
+  --muted:                 var(--ds-bg-muted);
+  --muted-foreground:      var(--ds-fg-secondary);
+  --accent:                var(--ds-bg-muted);
+  --accent-foreground:     var(--ds-fg);
+  --destructive:           var(--ds-danger);
+  --destructive-foreground:var(--ds-danger-fg);
+  --border:                var(--ds-border);
+  --input:                 var(--ds-border-strong);
+  --ring:                  var(--ds-focus-ring);
+  --radius:                0.625rem;   /* 10px — card/dialog default */
+}
+
+/* ===========================================================================
+ * TAILWIND THEME — what turns tokens into utilities
+ * `inline` resolves values at use site, which is what makes the .dark class
+ * swap actually reach every utility.
+ * ========================================================================= */
+@theme inline {
+  /* Colour utilities: bg-background, text-muted-foreground, border-border… */
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+
+  /* Ours, beyond shadcn's set: bg-subtle, text-secondary, bg-accent-subtle… */
+  --color-subtle:               var(--ds-bg-subtle);
+  --color-elevated:             var(--ds-bg-elevated);
+  --color-secondary-fg:         var(--ds-fg-secondary);
+  --color-accent-subtle:        var(--ds-accent-subtle);
+  --color-success:              var(--ds-success);
+  --color-warning:              var(--ds-warning);
+  --color-danger:               var(--ds-danger);
+  --color-border-strong:        var(--ds-border-strong);
+
+  /* KeyDNA additions */
+  --color-accent-lip:           var(--ds-accent-lip);
+  --color-dna:                  var(--ds-dna);
+  --color-dna-subtle:           var(--ds-dna-subtle);
+  --color-signal:               var(--ds-signal);
+  --color-signal-subtle:        var(--ds-signal-subtle);
+  --color-success-subtle:       var(--ds-success-subtle);
+  --color-warning-subtle:       var(--ds-warning-subtle);
+  --color-warning-ink:          var(--ds-warning-ink);
+  --color-danger-subtle:        var(--ds-danger-subtle);
+  --color-surface-lip:          var(--ds-surface-lip);
+  --font-rounded: var(--font-rounded), ui-rounded, system-ui, sans-serif;
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  /* Type — faces come from next/font via --font-* on <html> */
+  --font-display: var(--font-rounded), ui-rounded, system-ui, sans-serif;
+  --font-sans:    var(--font-rounded), ui-rounded, system-ui, sans-serif;
+  --font-mono:    var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+
+  /* Radius — rounded-sm … rounded-xl (§12) */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+
+  /* Elevation — shadow-e0 … shadow-e3 */
+  --shadow-e0: var(--ds-elevation-0);
+  --shadow-e1: var(--ds-elevation-1);
+  --shadow-e2: var(--ds-elevation-2);
+  --shadow-e3: var(--ds-elevation-3);
+
+  /* Motion — duration-instant, ease-quick … (§12) */
+  --ease-quick: cubic-bezier(0.2, 0, 0, 1);
+  --ease-soft:  cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+/* ===========================================================================
+ * BASE
+ * ========================================================================= */
+@layer base {
+  * {
+    border-color: var(--ds-border);
+  }
+
+  body {
+    background-color: var(--ds-bg);
+    color: var(--ds-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* One focus treatment, everywhere: 2px ring + 2px offset, both themes. */
+  :focus-visible {
+    outline: 2px solid var(--ds-focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Tracking tightens as size grows — §10.4. This is the single adjustment
+     that most separates considered typography from default typography. */
+  h1 { letter-spacing: -0.025em; }
+  h2 { letter-spacing: -0.020em; }
+  h3 { letter-spacing: -0.015em; }
+  h4 { letter-spacing: -0.010em; }
+
+  /* Numbers in tables and metrics line up without manual work. */
+  table, .tabular { font-variant-numeric: tabular-nums; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
