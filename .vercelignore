@@ -1,0 +1,5 @@
+ml/.venv
+ml/data
+ml/models
+ml/tests
+docs/screenshots
