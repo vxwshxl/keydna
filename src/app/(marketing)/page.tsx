@@ -3,8 +3,61 @@ import Link from "next/link";
 import { HeroVisual } from "@/components/landing/hero-visual";
 import { Logo } from "@/components/logo";
 import { ButtonLink } from "@/components/ui/button";
+import { FAQ, HOW_TO } from "@/lib/faq";
+import { abs, jsonLd, SITE } from "@/lib/site";
 
-const REPO = "https://github.com/vxwshxl/keydna";
+const REPO = SITE.repo;
+
+const STRUCTURED = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      url: SITE.url,
+      name: SITE.name,
+      description: SITE.description,
+      inLanguage: "en",
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${SITE.url}/#app`,
+      name: SITE.name,
+      alternateName: SITE.academicTitle,
+      url: SITE.url,
+      image: abs("/opengraph-image"),
+      description: SITE.description,
+      applicationCategory: "SecurityApplication",
+      applicationSubCategory: "Behavioral biometrics · continuous authentication",
+      operatingSystem: "Web browser (macOS, Windows, Linux); companion on iOS/Android browsers",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      isAccessibleForFree: true,
+      codeRepository: SITE.repo,
+      keywords: SITE.keywords.join(", "),
+      featureList: [
+        "Continuous identity verification from keystroke timing",
+        "Random Forest verifier trained with scikit-learn, run in the browser",
+        "Session takeover alerts with re-authentication and lock",
+        "Monkeytype history import for enrollment",
+        "Explainable per-window feature deviations",
+        "Privacy-first: timing and hand zone only, never characters",
+        "Phone companion for remote session lock",
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      "@id": `${SITE.url}/#faq`,
+      mainEntity: FAQ.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+    },
+    {
+      "@type": "HowTo",
+      "@id": `${SITE.url}/#how`,
+      name: "How to protect a session with KeyDNA",
+      totalTime: "PT2M",
+      step: HOW_TO.map((s, i) => ({ "@type": "HowToStep", position: i + 1, name: s.name, text: s.text })),
+    },
+  ],
+};
 
 function Flow({ title, tone, steps }: { title: string; tone: "danger" | "success"; steps: { icon: React.ElementType; text: string; bad?: boolean }[] }) {
   return (
@@ -27,10 +80,12 @@ function Flow({ title, tone, steps }: { title: string; tone: "danger" | "success
 export default function Landing() {
   return (
     <div className="min-h-dvh">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(STRUCTURED)} />
       <header className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-5 sm:px-6">
         <Logo />
         <nav aria-label="Site" className="ml-auto hidden items-center gap-6 text-sm font-extrabold text-secondary-fg uppercase sm:flex">
           <a href="#how" className="hover:text-foreground">How it works</a>
+          <a href="#faq" className="hover:text-foreground">FAQ</a>
           <Link href="/model" className="hover:text-foreground">Model</Link>
           <a href={REPO} className="hover:text-foreground">GitHub</a>
         </nav>
@@ -136,6 +191,22 @@ export default function Landing() {
           <p className="mx-auto mt-12 max-w-3xl px-4 text-center text-sm font-bold text-secondary-fg">
             KeyDNA is a risk signal for continuous authentication, not a perfect biometric replacement. A knowledgeable attacker could imitate typing behaviour — combine it with MFA and device signals.
           </p>
+        </section>
+
+        <section id="faq" className="mx-auto max-w-3xl px-4 py-20 sm:px-6" aria-labelledby="faq-title">
+          <p className="eyebrow">Questions, answered</p>
+          <h2 id="faq-title" className="mt-2 text-3xl font-black sm:text-4xl">Frequently asked questions</h2>
+          <div className="mt-8 flex flex-col gap-3">
+            {FAQ.map((f, i) => (
+              <details key={f.q} className="card3d group p-0 [&_summary::-webkit-details-marker]:hidden" open={i === 0}>
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-lg font-extrabold">
+                  <h3>{f.q}</h3>
+                  <span aria-hidden className="text-2xl text-primary transition-transform duration-150 group-open:rotate-45">+</span>
+                </summary>
+                <p className="px-5 pb-5 text-secondary-fg">{f.a}</p>
+              </details>
+            ))}
+          </div>
         </section>
       </main>
 
