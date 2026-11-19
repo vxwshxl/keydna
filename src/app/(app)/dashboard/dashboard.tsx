@@ -3,6 +3,7 @@ import { Cpu, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { ChartLegend, ConfidenceChart } from "@/components/keydna/confidence-chart";
 import { FeatureTable } from "@/components/keydna/feature-table";
+import { FreeTyping } from "@/components/keydna/free-typing";
 import { TypingSurface } from "@/components/keydna/typing-surface";
 import { DeviationList, EventList, Gauge, KeyPulses, NoProfile, Pipeline, StatusLabel } from "@/components/keydna/widgets";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,14 @@ export function Dashboard() {
       <Card>
         <CardTitle eyebrow="Type anything in KeyDNA · only timing is analysed" title="Type to stay verified" />
         <TypingSurface mode="monitor" grabKeys label="Typing area. Only key timing is analysed, the text is never stored" />
+      </Card>
+
+      <Card>
+        <CardTitle eyebrow="Any text works · nothing you write is saved" title="Or type anything you like" />
+        <p className="-mt-2 mb-4 max-w-3xl text-sm text-secondary-fg">
+          KeyDNA doesn&apos;t need the prompted words. It checks the rhythm of whatever you type, so emails, chat messages or random letters all keep the session verified in the same way.
+        </p>
+        <FreeTyping />
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
