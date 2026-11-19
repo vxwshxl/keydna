@@ -11,17 +11,33 @@ export function TakeoverAlert() {
   const open = useLive((s) => s.alertOpen);
   const current = useLive((s) => s.current);
   const ref = useRef<HTMLDialogElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+  // Keyboard activation only after the user deliberately Tabs to a button. Before that, the
+  // typing that triggered the alert must not press "Re-authenticate" or "Dismiss" by accident.
+  const armed = useRef(false);
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (open && !d.open) d.showModal();
+    if (open && !d.open) {
+      armed.current = false;
+      d.showModal();
+      body.current?.focus();
+    }
     if (!open && d.open) d.close();
   }, [open]);
 
+  const onKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>) => {
+    if (e.key === "Tab") {
+      armed.current = true;
+      return;
+    }
+    if ((e.key === "Enter" || e.key === " ") && !armed.current) e.preventDefault();
+  };
+
   return (
-    <dialog ref={ref} className="modal" aria-labelledby="takeover-title" onCancel={(e) => (e.preventDefault(), dismissAlert())} data-keydna-ignore>
-      <div className="p-6 sm:p-8">
+    <dialog ref={ref} className="modal" aria-labelledby="takeover-title" onCancel={(e) => e.preventDefault()} onKeyDown={onKeyDown} data-keydna-ignore>
+      <div ref={body} tabIndex={-1} className="p-6 outline-none sm:p-8">
         <div className="anim-shake mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-danger text-primary-foreground shadow-[0_4px_0_0_var(--ds-danger-lip)]">
           <TriangleAlert className="size-8" aria-hidden />
         </div>
@@ -30,6 +46,7 @@ export function TakeoverAlert() {
         <p className="mx-auto mt-3 max-w-sm text-center text-secondary-fg">
           The typing on this session no longer matches the enrolled profile. Behavioural deviation exceeds the critical threshold.
         </p>
+        <p className="mx-auto mt-2 max-w-sm text-center text-xs font-bold text-secondary-fg">Verification is paused until you choose an option below.</p>
         {current && (
           <div className="mt-5 grid grid-cols-2 gap-3">
             <div className="rounded-xl bg-danger-subtle p-3 text-center">

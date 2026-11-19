@@ -216,6 +216,10 @@ body {
   30% { transform: translateY(0) scale(1); opacity: 1; }
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
+@keyframes caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }

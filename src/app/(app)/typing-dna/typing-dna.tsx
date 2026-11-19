@@ -1,5 +1,6 @@
 "use client";
 import { Gauge as GaugeIcon, Hand, Keyboard, Repeat, Target, Timer, Waves } from "lucide-react";
+import { FeatureTable } from "@/components/keydna/feature-table";
 import { HistoryStats } from "@/components/keydna/monkeytype-import";
 import { NoProfile } from "@/components/keydna/widgets";
 import { ButtonLink } from "@/components/ui/button";
@@ -125,6 +126,11 @@ export function TypingDNA() {
           <p className="mt-3 text-xs font-bold text-secondary-fg">Cross/same-hand ratio {v(I.cross_same_ratio).toFixed(2)} · rollover on {pct(v(I.overlap_rate) * 100, 0)} of transitions.</p>
         </Card>
       </div>
+
+      <Card>
+        <CardTitle eyebrow="Average ± usual variation across your enrollment windows" title="Your profile: all 25 features" />
+        <FeatureTable profile={p.profile} />
+      </Card>
 
       <Card>
         <CardTitle eyebrow="Measured during calibration, kept on this device only" title="Common transitions" />

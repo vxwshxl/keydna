@@ -1,6 +1,7 @@
 import { OG_BASE } from "@/lib/site";
 import { FlaskConical, TriangleAlert } from "lucide-react";
 import type { Metadata } from "next";
+import { FeatureTable } from "@/components/keydna/feature-table";
 import { Card, CardTitle } from "@/components/ui/card";
 import type { Metrics } from "@/lib/keydna/metrics";
 import { abs, jsonLd, SITE } from "@/lib/site";
@@ -166,6 +167,14 @@ export default function ModelPage() {
           </div>
         </Card>
       </div>
+
+      <Card>
+        <CardTitle eyebrow="Computed from every 60-keystroke window" title="The 25 features the model reads" />
+        <p className="mb-4 max-w-3xl text-sm text-secondary-fg">
+          Each window gives three timings per key: <b className="text-foreground">hold</b> (release minus press), <b className="text-foreground">flight</b> (gap to the next press) and the <b className="text-foreground">release-to-press gap</b>. Gaps under 0.6 s are fluent typing, 0.6 to 2 s are pauses, and longer gaps are ignored as idle time. The model never sees these values directly. It sees how far each one is from the user&apos;s profile.
+        </p>
+        <FeatureTable />
+      </Card>
 
       <Card>
         <CardTitle eyebrow="Mean decrease in impurity, from the trained forest" title="Feature importance" />

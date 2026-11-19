@@ -3,6 +3,7 @@ import { Download, Keyboard, Play, Radio, RotateCcw, Square, Trash2, UserRound, 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChartLegend, ConfidenceChart } from "@/components/keydna/confidence-chart";
+import { TypingSurface } from "@/components/keydna/typing-surface";
 import { EventList, NoProfile } from "@/components/keydna/widgets";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -193,15 +194,10 @@ function SecurityConsole() {
               </Button>
             )}
           </div>
-          <textarea
-            id="attack-typing"
-            data-keydna-monitor
-            className="field mt-4 min-h-24 resize-none"
-            placeholder={phase === "legit" ? `${profile.name}: type anything here…` : "Attacker: type anything here…"}
-            aria-label="Live typing for the simulation (content is never stored)"
-            autoComplete="off"
-            spellCheck={false}
-          />
+          <div className="mt-5 rounded-xl bg-subtle p-4 shadow-[inset_0_0_0_2px_var(--ds-surface-lip)]">
+            <p className="eyebrow mb-3">{phase === "legit" ? `${profile.name}, type here` : "Attacker, type here"}</p>
+            <TypingSurface id="attack-typing" mode="monitor" autoFocus={false} label="Live typing for the simulation. Only key timing is analysed" />
+          </div>
         </Card>
 
         <Card tone={cur?.risk === "CRITICAL" ? "danger" : undefined}>

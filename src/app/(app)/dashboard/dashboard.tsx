@@ -2,6 +2,8 @@
 import { Cpu, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import { ChartLegend, ConfidenceChart } from "@/components/keydna/confidence-chart";
+import { FeatureTable } from "@/components/keydna/feature-table";
+import { TypingSurface } from "@/components/keydna/typing-surface";
 import { DeviationList, EventList, Gauge, KeyPulses, NoProfile, Pipeline, StatusLabel } from "@/components/keydna/widgets";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
@@ -51,6 +53,11 @@ export function Dashboard() {
         </div>
       </div>
 
+      <Card>
+        <CardTitle eyebrow="Type anything in KeyDNA · only timing is analysed" title="Type to stay verified" />
+        <TypingSurface mode="monitor" grabKeys label="Typing area. Only key timing is analysed, the text is never stored" />
+      </Card>
+
       <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr]">
         <Card tone={cur?.risk === "CRITICAL" ? "danger" : cur?.risk === "LOW" ? "accent" : undefined} className="flex flex-col items-center gap-6 sm:flex-row">
           <Gauge value={cur?.confidence ?? null} risk={cur?.risk ?? null} />
@@ -76,16 +83,9 @@ export function Dashboard() {
         </Card>
 
         <Card>
-          <CardTitle eyebrow="Live keystrokes" title="Type here — or anywhere in KeyDNA" />
-          <textarea
-            data-keydna-monitor
-            className="field min-h-28 resize-none text-base"
-            placeholder="Write a note, answer an email in your head, anything. What you type is never saved — only timing is analysed."
-            aria-label="Typing workspace (content is never stored)"
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <KeyPulses pulses={live.pulses} className="mt-4" />
+          <CardTitle eyebrow="Live keystrokes" title="What KeyDNA records" />
+          <KeyPulses pulses={live.pulses} />
+          <p className="mt-4 text-xs font-bold text-secondary-fg">Each bar is one key: its height is the hold time and its colour is the hand zone (L, R, space or backspace). The letter itself is never recorded.</p>
         </Card>
       </div>
 
@@ -135,6 +135,15 @@ export function Dashboard() {
           <EventList events={events} limit={6} compact />
         </Card>
       </div>
+
+      <Card>
+        <CardTitle
+          eyebrow={cur ? "Live · the window the model just scored" : "Your enrolled profile · live values appear after 60 keystrokes"}
+          title="All 25 features the model reads"
+        />
+        <FeatureTable profile={profile.profile} current={cur?.features} distances={cur?.distances} />
+        <p className="mt-4 text-xs font-bold text-secondary-fg">Your normal is your enrollment average ± how much you usually vary. The bar shows how many of your own standard deviations this window is away from it, which is exactly what the Random Forest sees.</p>
+      </Card>
     </div>
   );
 }

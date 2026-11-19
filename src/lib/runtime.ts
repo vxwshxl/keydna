@@ -19,6 +19,7 @@ let lastUp = 0;
 let shift = 0;
 let pulseSeq = 0;
 let stopReplay: (() => void) | null = null;
+let dismissedAtKeys: number | null = null;
 
 export function getModel() {
   return model;
@@ -67,11 +68,14 @@ function record(cur: WindowScore) {
   const events = eventsFor(prev, cur);
   useKeyDNA.getState().addEvents(events);
   const becameCritical = cur.risk === "CRITICAL" && prev?.risk !== "CRITICAL";
+  // A dismissed alert comes back if the mismatch carries on for another full window.
+  const stillCritical = cur.risk === "CRITICAL" && dismissedAtKeys !== null && cur.keys - dismissedAtKeys >= 60;
+  if (stillCritical || cur.risk !== "CRITICAL") dismissedAtKeys = null;
   useLive.setState({
     current: cur,
     scores: [...live.scores, cur].slice(-240),
     status: live.status === "locked" ? "locked" : "active",
-    alertOpen: live.alertOpen || becameCritical,
+    alertOpen: live.alertOpen || becameCritical || stillCritical,
   });
 }
 
@@ -89,7 +93,7 @@ async function serverScore(features: number[]): Promise<number> {
 /** Feed one keystroke into the session. */
 export function ingest(raw: KeyEvent) {
   const live = useLive.getState();
-  if (!verifier || !model || live.status === "locked") return;
+  if (!verifier || !model || live.status === "locked" || live.alertOpen) return;
   // A clock jump backwards (live keys after a fast-forwarded replay) becomes an idle gap,
   // never a negative interval. Small reorderings from key rollover are left alone.
   if (lastDown !== null && raw[0] + shift < lastDown - model.config.idle_ms) shift = lastUp + model.config.idle_ms + 1 - raw[0];
@@ -127,6 +131,7 @@ export function lockSession(reason = "Session locked by user") {
 
 export function reauthenticate() {
   stopReplay?.();
+  dismissedAtKeys = null;
   verifier?.reset(1);
   lastDown = null;
   useLive.setState({ status: "collecting", alertOpen: false, current: null, collected: 0, pulses: [] });
@@ -134,6 +139,7 @@ export function reauthenticate() {
 }
 
 export function dismissAlert() {
+  dismissedAtKeys = useLive.getState().current?.keys ?? 0;
   useLive.setState({ alertOpen: false });
   log(manualEvent("dismissed", "Alert dismissed", "LOW", "A takeover alert was dismissed without re-authentication.", useLive.getState().current?.confidence ?? null));
 }

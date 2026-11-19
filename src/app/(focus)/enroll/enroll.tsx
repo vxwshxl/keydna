@@ -119,8 +119,9 @@ function EnrollFlow() {
           <section className="anim-rise">
             <p className="eyebrow">Step 3 · live calibration</p>
             <h1 className="text-3xl font-black">Type naturally for about a minute</h1>
-            <p className="mt-2 mb-6 flex items-center gap-2 text-secondary-fg">
-              <Keyboard className="size-5 shrink-0" aria-hidden /> Don&apos;t rush and don&apos;t fix every typo — KeyDNA learns how you <i>normally</i> type, mistakes included.
+            <p className="mt-2 mb-6 flex items-start gap-2 text-secondary-fg">
+              <Keyboard className="mt-1 size-5 shrink-0" aria-hidden />
+              <span>Don&apos;t rush and don&apos;t worry about typos. KeyDNA learns how you <i>normally</i> type, mistakes included.</span>
             </p>
             {modelError ? (
               <p className="rounded-xl bg-danger-subtle p-4 font-bold text-danger" role="alert">Model failed to load: {modelError}</p>
